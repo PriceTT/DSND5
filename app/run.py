@@ -2,8 +2,15 @@ import json
 import plotly
 import pandas as pd
 
+import re
+
+import nltk
+nltk.download(['punkt', 'wordnet','stopwords','averaged_perceptron_tagger'])
 from nltk.stem import WordNetLemmatizer
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -15,22 +22,33 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    """Normalize, tokenize and stem text string
+    
+    Parameters:
+    text (string): Single message as a string
+       
+    Returns:
+    lemmed (list): List containing normalized and lemmed word tokens
+    """
+    # Convert text to lowercase and remove punctuation
+    text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
+    
+    # Tokenize words
     tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
+    
+    stop_words = stopwords.words("english")
+    
+    # lemmed word tokens and remove stop words
+    lemmed = [WordNetLemmatizer().lemmatize(word, pos='v') for word in tokens if word not in stop_words]
+    
+    return lemmed
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/disasterMessages.db')
+df = pd.read_sql_table('disasterMessages', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("../models/disaster_model_Ad_Mod.sav")
 
 
 # index webpage displays cool visuals and receives user input text for model
