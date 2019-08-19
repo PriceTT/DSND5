@@ -11,7 +11,7 @@
 	2. [Installing](#installing)
 	3. [Executing Program](#executing)
 	4. [Additional Material](#material)
-3. [Authors](#authors)
+3. [Future Work](#fw)
 4. [Acknowledgement](#acknowledgement)
 5. [Screenshots](#screenshots)
 
@@ -64,6 +64,18 @@ https://github.com/PriceTT/DSND5.git
 In the **EDA_Jupyter_Notebook**  folder you can find two jupyter notebook that will help you understand how the model works step by step:
 1. **ETL Preparation Notebook**: learn everything about the implemented ETL pipeline
 2. **ML Pipeline Preparation Notebook**: look at the Machine Learning Pipeline developed with NLTK and Scikit-Learn
+
+<a name="fw"></a>
+### Future work
+
+To deal with the  low frequency of some of the  classes it was decided to select rows classified as **weather_related**, **food** and **infrastructure_related** since they were highly corelated with other features.  
+This then boosted the frequency of the other classes and helps to boost the F-score.  
+With more time, having a balanced feature set should help with the predictive quality of the model.    
+[This stack exchange answer]( https://stats.stackexchange.com/questions/131255/class-imbalance-in-supervised-machine-learning) lists:  
+* Undersampling. Select a subsample of the of the datasets
+* Oversampling. Produce artificial ones 
+* Cost-Sensitive Training. Use a asymmetric cost function to artificially balance the training process.
+
 
 <a name="acknowledgement"></a>
 ## Acknowledgements
