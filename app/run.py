@@ -14,7 +14,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Heatmap
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -58,10 +58,22 @@ def index():
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
+    
+    # Distribution of genre
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    
+    # Mean of the features
     feat_means = df.loc[:, 'related':'direct_report'].mean()
     feat_names = list(df.loc[:, 'related':'direct_report'].columns)
+    
+    # Correlation of the top n features
+    k = 10
+    target_feature ='water'
+    cols = abs(df.corr()).nlargest(k, target_feature)[target_feature]
+
+    corr_names=list(cols.index)
+    corr_values=cols.values
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -85,7 +97,32 @@ def index():
             }
         },
 
-        {   'data': [
+
+        
+        {
+            'data': [
+                Heatmap(
+                    z=df[corr_names].corr().values, 
+                    x=corr_names,
+                    y=corr_names,
+                    colorscale='Viridis',
+                )
+            ],
+
+            'layout': {
+                'title': 'Top ten features correlated with the feature water',
+                'height': 750,
+                'margin': dict(
+                    l = 150,
+                    r = 30, 
+                    b = 160,
+                    t = 30,
+                    pad = 4
+                    ),
+            }
+        },
+        
+       {   'data': [
                 Bar(
                     x=feat_names,
                     y=feat_means
