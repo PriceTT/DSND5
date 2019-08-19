@@ -44,8 +44,8 @@ def tokenize(text):
     return lemmed
 
 # load data
-engine = create_engine('sqlite:///../data/disasterMessages.db')
-df = pd.read_sql_table('disasterMessages', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('messages', engine)
 
 # load model
 model = joblib.load("../models/disaster_model_Ad_Mod.sav")
