@@ -40,7 +40,7 @@ def load_data(database_filepath):
     # load data from database
     db_location = 'sqlite:///' + database_filepath
     engine = create_engine(db_location)
-    df = pd.read_sql_table('disasterMessages', engine)
+    df = pd.read_sql_table('messages', engine)
     
     # Messages
     X = df['message']
