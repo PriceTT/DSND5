@@ -83,16 +83,33 @@ def build_model(X_train, Y_train):
     
     Returns:
     model (object): model for prediction
+    X_mod (array): modified features for training
+    Y_mod (array): modified target for training
     """
+    # Modified dataset to help balance the features  based on weather food and and infrastructure
+    # Improved training speed and F score compared to using the full dataset
+    # see ML pipeline notebook for more details
+        
+    Y_mod=Y_train[ (Y_train['weather_related']==1)  | 
+            (Y_train['food']==1) | 
+            (Y_train['infrastructure_related']==1) ]
+    
+    X_mod=X_train[Y_mod.index.tolist()]
+    
+    scorer = make_scorer(f1_score, average='micro')
     
     pipeline = Pipeline([
     ('Tdifvect', TfidfVectorizer(tokenizer = tokenize)),          #Bag of Words and Tf-idf
-    ('clf', MultiOutputClassifier(AdaBoostClassifier(DecisionTreeClassifier(max_depth=4), n_estimators=300)))
+    ('clf', MultiOutputClassifier(AdaBoostClassifier(DecisionTreeClassifier(max_depth=4))))
     ])
     
-    model = pipeline.fit(X_train, Y_train)
+    parameters = {"clf__estimator__n_estimators" : [100, 300], 
+                      "clf__estimator__learning_rate" : [0.1, 1 ]}
     
-    return model
+    # Grid search
+    model = GridSearchCV(pipeline, param_grid = parameters, scoring = scorer, verbose = 10, cv=5, n_jobs=4)
+
+    return model, X_mod, Y_mod
 
 def evaluate_model(model, X_test, Y_test, category_names):
     """Return  f1 score, precision and recall for each output category of the dataset
@@ -120,8 +137,12 @@ def evaluate_model(model, X_test, Y_test, category_names):
         recall = recall_score(actual[:, i], predicted[:, i])
         f1 = f1_score(actual[:, i], predicted[:, i])
         
+        # Print stats to console
+        print('For feature {0} : Accuracy = {1:.2f}, Precision = {2:.2f}, , Recall = {3:.2f} and F1 score = {4:.2f}.'
+              .format(category_names[i], accuracy, precision, recall, f1))
+        # save stats to df
         metrics.append([accuracy, precision, recall, f1])
-    
+        
     # Create dataframe containing metrics
     metrics = np.array(metrics)
     df = pd.DataFrame(data = metrics, index = category_names, columns = ['Accuracy', 'Precision', 'Recall', 'F1'])
@@ -148,10 +169,10 @@ def main():
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
-        model = build_model(X_train, Y_train)
+        model, X_mod, Y_mod = build_model(X_train, Y_train)
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        model.fit(X_mod, Y_mod)
         
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
