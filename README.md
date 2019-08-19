@@ -66,7 +66,7 @@ In the **EDA_Jupyter_Notebook**  folder you can find two jupyter notebook that w
 2. **ML Pipeline Preparation Notebook**: look at the Machine Learning Pipeline developed with NLTK and Scikit-Learn
 
 <a name="fw"></a>
-### Future work
+## Future work
 
 To deal with the  low frequency of some of the  classes it was decided to select rows classified as **weather_related**, **food** and **infrastructure_related** since they were highly corelated with other features.  
 This then boosted the frequency of the other classes and helps to boost the F-score.  
