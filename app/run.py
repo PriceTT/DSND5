@@ -60,6 +60,8 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    feat_means = df.loc[:, 'related':'direct_report'].mean()
+    feat_names = list(df.loc[:, 'related':'direct_report'].columns)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -81,7 +83,26 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+
+        {   'data': [
+                Bar(
+                    x=feat_names,
+                    y=feat_means
+                )
+            ],
+
+            'layout': {
+                'title': 'Mean of the different features',
+                'yaxis': {
+                    'title': "Mean"
+                },
+                'xaxis': {
+                    'title': "Features"
+                }
+            }
         }
+
     ]
     
     # encode plotly graphs in JSON
