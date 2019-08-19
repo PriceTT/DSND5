@@ -1,6 +1,8 @@
 # DSND5: Disaster Response Pipeline Project
 
-![Intro Pic](2019-08-19 08_52_00-Disasters.png)
+<p align="center">
+  <img src="2019-08-19 08_52_00-Disasters.png">
+</p>
 
 ## Table of Contents
 1. [Description](#description)
@@ -74,5 +76,8 @@ In the **EDA_Jupyter_Notebook**  folder you can find two jupyter notebook that w
 
 1. This is an example of a message you can type to test Machine Learning model performance
 
-![Sample Input](2019-08-19 08_59_42-Disasters.png)
+<p align="center">
+  <img src="2019-08-19 08_59_42-Disasters.png">
+</p>
+
 
